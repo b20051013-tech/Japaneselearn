@@ -47,19 +47,37 @@
             box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.3);
             border-color: #fbcfe8;
         }
+        
+        /* Modal 動畫 */
         .modal-enter { opacity: 0; transform: scale(0.95) translateY(20px); }
         .modal-enter-active { opacity: 1; transform: scale(1) translateY(0); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .modal-leave { opacity: 1; transform: scale(1) translateY(0); }
         .modal-leave-active { opacity: 0; transform: scale(0.95) translateY(20px); transition: all 0.3s ease; }
         
+        /* 自訂彈出視窗的捲軸 (解決無法下滑問題) */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #fbcfe8; 
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #f9a8d4; 
+        }
+
         /* 彈出視窗內的富文本排版 */
         .rich-content h3 {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #db2777;
+            color: #db2777; /* sakura-600 */
             margin-top: 2rem;
             margin-bottom: 1rem;
-            border-bottom: 2px solid #fce7f3;
+            border-bottom: 2px solid #fce7f3; /* sakura-100 */
             padding-bottom: 0.5rem;
             font-family: 'Noto Serif TC', serif;
         }
@@ -97,15 +115,15 @@
             content: "🌸";
             position: absolute;
             left: 0;
-            top: 0px;
+            top: 2px;
             font-size: 0.9rem;
         }
         .vocab-box {
             background: #fdf2f8;
             border-left: 4px solid #ec4899;
-            padding: 1rem;
+            padding: 1.2rem;
             border-radius: 0 0.5rem 0.5rem 0;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
         }
         .image-zoom-container { overflow: hidden; }
         .image-zoom-container img { transition: transform 0.7s ease; }
@@ -134,11 +152,10 @@
     <!-- 頁首 Hero 區塊 -->
     <header class="relative pt-24 pb-32 flex items-center justify-center min-h-[80vh] overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <!-- 使用維基共享資源的高畫質富士山與櫻花圖片 -->
-            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mount_Fuji_and_Chureito_Pagoda_in_Spring.jpg?width=1920" 
+            <!-- 穩定的背景圖 -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Cherry_blossoms_in_Kyoto.jpg/1920px-Cherry_blossoms_in_Kyoto.jpg" 
                  alt="櫻花背景" 
-                 class="w-full h-full object-cover opacity-60"
-                 crossorigin="anonymous">
+                 class="w-full h-full object-cover opacity-60">
             <div class="absolute inset-0 bg-gradient-to-b from-white/70 via-white/40 to-[#fafaf9]"></div>
         </div>
         <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
@@ -168,8 +185,9 @@
                 </div>
             </div>
 
+            <!-- 五十音網格 (由 JS 動態生成) -->
             <div id="kana-grid" class="grid grid-cols-5 gap-3 md:gap-6 max-w-4xl mx-auto">
-                <!-- 由 JS 生成 -->
+                <!-- 內容見下方 JS -->
             </div>
         </div>
     </section>
@@ -184,10 +202,10 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <!-- 文化卡片：茶道 (維基真實照片) -->
+                <!-- 文化卡片 -->
                 <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100" onclick="openModal('chado')">
                     <div class="relative h-64 image-zoom-container">
-                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Japanese_tea_ceremony.jpg?width=800" alt="茶道" crossorigin="anonymous" onerror="replaceWithSVG(this, '茶道')" class="w-full h-full object-cover">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Japanese_tea_ceremony_1.jpg/800px-Japanese_tea_ceremony_1.jpg" alt="茶道" onerror="replaceWithSVG(this, '茶道')" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all"></div>
                     </div>
                     <div class="p-6 relative">
@@ -198,10 +216,9 @@
                     </div>
                 </div>
 
-                <!-- 文化卡片：祭典 (京都祇園祭真實照片) -->
                 <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100" onclick="openModal('matsuri')">
                     <div class="relative h-64 image-zoom-container">
-                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Minami_Kannonyama_Gion_Matsuri_Yoiyama.jpg?width=800" alt="祭典" crossorigin="anonymous" onerror="replaceWithSVG(this, '祭典')" class="w-full h-full object-cover">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Aomori_Nebuta_Matsuri_2010.jpg/800px-Aomori_Nebuta_Matsuri_2010.jpg" alt="祭典" onerror="replaceWithSVG(this, '祭典')" class="w-full h-full object-cover">
                     </div>
                     <div class="p-6 relative">
                         <div class="absolute -top-6 right-6 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg text-orange-500 text-xl"><i class="fas fa-fire"></i></div>
@@ -211,10 +228,9 @@
                     </div>
                 </div>
 
-                <!-- 文化卡片：溫泉 (那智勝浦露天溫泉真實照片) -->
                 <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100" onclick="openModal('onsen')">
                     <div class="relative h-64 image-zoom-container">
-                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Onsen_in_Nachikatsuura,_Japan.jpg?width=800" alt="溫泉" crossorigin="anonymous" onerror="replaceWithSVG(this, '溫泉')" class="w-full h-full object-cover">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Kusatsu_onsen08s3200.jpg/800px-Kusatsu_onsen08s3200.jpg" alt="溫泉" onerror="replaceWithSVG(this, '溫泉')" class="w-full h-full object-cover">
                     </div>
                     <div class="p-6 relative">
                         <div class="absolute -top-6 right-6 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg text-blue-500 text-xl"><i class="fas fa-hot-tub"></i></div>
@@ -237,10 +253,10 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <!-- 京都 (清水寺真實照片) -->
+                <!-- 景點/美食卡片 1 -->
                 <div class="group flex flex-col sm:flex-row bg-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer" onclick="openModal('kyoto')">
                     <div class="sm:w-2/5 h-48 sm:h-auto image-zoom-container relative">
-                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Kiyomizu.jpg?width=800" alt="京都" crossorigin="anonymous" onerror="replaceWithSVG(this, '京都')" class="w-full h-full object-cover">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Kiyomizu-dera_in_Kyoto-HDR.jpg/800px-Kiyomizu-dera_in_Kyoto-HDR.jpg" alt="京都" onerror="replaceWithSVG(this, '京都')" class="w-full h-full object-cover">
                     </div>
                     <div class="p-6 sm:w-3/5 flex flex-col justify-center bg-white border-y border-r border-gray-100 rounded-r-2xl">
                         <h3 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-sakura-600 transition-colors">千年古都：京都</h3>
@@ -249,10 +265,10 @@
                     </div>
                 </div>
 
-                <!-- 東京 (澀谷十字路口真實照片) -->
+                <!-- 景點/美食卡片 2 -->
                 <div class="group flex flex-col sm:flex-row bg-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer" onclick="openModal('tokyo')">
                     <div class="sm:w-2/5 h-48 sm:h-auto image-zoom-container relative">
-                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/The_One_Minutes_at_Shibuya_Crossing_in_Tokyo_for_EASTEAST_2.jpg?width=800" alt="東京" crossorigin="anonymous" onerror="replaceWithSVG(this, '東京')" class="w-full h-full object-cover">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Shibuya_Crossing_2018.jpg/800px-Shibuya_Crossing_2018.jpg" alt="東京" onerror="replaceWithSVG(this, '東京')" class="w-full h-full object-cover">
                     </div>
                     <div class="p-6 sm:w-3/5 flex flex-col justify-center bg-white border-y border-r border-gray-100 rounded-r-2xl">
                         <h3 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-sakura-600 transition-colors">大都會：東京</h3>
@@ -261,10 +277,10 @@
                     </div>
                 </div>
 
-                <!-- 壽司 -->
+                <!-- 景點/美食卡片 3 -->
                 <div class="group flex flex-col sm:flex-row bg-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer" onclick="openModal('sushi')">
                     <div class="sm:w-2/5 h-48 sm:h-auto image-zoom-container relative">
-                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Nigiri_sushi.jpg?width=800" alt="壽司" crossorigin="anonymous" onerror="replaceWithSVG(this, '壽司')" class="w-full h-full object-cover">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Nigirisushi.jpg/800px-Nigirisushi.jpg" alt="壽司" onerror="replaceWithSVG(this, '壽司')" class="w-full h-full object-cover">
                     </div>
                     <div class="p-6 sm:w-3/5 flex flex-col justify-center bg-white border-y border-r border-gray-100 rounded-r-2xl">
                         <h3 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-sakura-600 transition-colors">美食藝術：壽司</h3>
@@ -273,10 +289,10 @@
                     </div>
                 </div>
 
-                <!-- 拉麵 -->
+                <!-- 景點/美食卡片 4 -->
                 <div class="group flex flex-col sm:flex-row bg-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer" onclick="openModal('ramen')">
                     <div class="sm:w-2/5 h-48 sm:h-auto image-zoom-container relative">
-                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Shoyu_ramen.jpg?width=800" alt="拉麵" crossorigin="anonymous" onerror="replaceWithSVG(this, '拉麵')" class="w-full h-full object-cover">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Shoyu_Ramen.jpg/800px-Shoyu_Ramen.jpg" alt="拉麵" onerror="replaceWithSVG(this, '拉麵')" class="w-full h-full object-cover">
                     </div>
                     <div class="p-6 sm:w-3/5 flex flex-col justify-center bg-white border-y border-r border-gray-100 rounded-r-2xl">
                         <h3 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-sakura-600 transition-colors">靈魂料理：拉麵</h3>
@@ -297,25 +313,32 @@
     </footer>
 
     <!-- 共用彈出視窗 (Modal) -->
+    <!-- 修正重點：移除 overflow-hidden 避免鎖死卷軸 -->
     <div id="modal-backdrop" class="fixed inset-0 bg-black/60 z-50 hidden backdrop-blur-sm transition-opacity duration-300 opacity-0" onclick="closeModal(event)">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-            <div id="modal-panel" class="relative bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:max-w-3xl w-full modal-enter" onclick="event.stopPropagation()">
-                <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-10 h-10 bg-white/50 backdrop-blur rounded-full flex items-center justify-center text-gray-800 hover:bg-white hover:text-sakura-600 transition-colors shadow">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-10 text-center sm:p-0">
+            
+            <!-- 修正重點：加上 max-h-[90vh], overflow-y-auto 與 custom-scrollbar 讓內容可以滑動！ -->
+            <div id="modal-panel" class="relative bg-white rounded-2xl text-left shadow-2xl transform transition-all sm:my-8 sm:max-w-3xl w-full max-h-[90vh] overflow-y-auto overflow-x-hidden custom-scrollbar modal-enter" onclick="event.stopPropagation()">
+                
+                <!-- 關閉按鈕 (固定在右上角) -->
+                <button onclick="closeModal()" class="absolute top-4 right-4 z-20 w-10 h-10 bg-white/70 backdrop-blur rounded-full flex items-center justify-center text-gray-800 hover:bg-sakura-600 hover:text-white transition-colors shadow">
                     <i class="fas fa-times text-xl"></i>
                 </button>
                 
-                <div class="h-64 sm:h-80 w-full relative">
-                    <img id="modal-image" src="" alt="Modal Image" crossorigin="anonymous" class="w-full h-full object-cover">
+                <!-- Modal 圖片 (使用 flex-shrink-0 保證不被壓縮) -->
+                <div class="h-64 sm:h-80 w-full relative flex-shrink-0">
+                    <img id="modal-image" src="" alt="Modal Image" class="w-full h-full object-cover rounded-t-2xl">
                     <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
                 </div>
                 
-                <div class="px-6 sm:px-10 py-8 relative -mt-16">
+                <!-- Modal 內容 -->
+                <div class="px-6 sm:px-10 pb-10 relative -mt-16 z-10">
                     <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-100">
                         <h2 id="modal-title" class="text-3xl sm:text-4xl font-serif font-bold text-gray-900 mb-2">標題</h2>
                         <p id="modal-subtitle" class="text-lg text-sakura-600 font-medium mb-6">副標題</p>
                         
                         <div id="modal-body" class="rich-content">
-                            <!-- 內容生成 -->
+                            <!-- JS 動態插入富文本內容 -->
                         </div>
                     </div>
                 </div>
@@ -323,17 +346,18 @@
         </div>
     </div>
 
+    <!-- JavaScript 邏輯 -->
     <script>
-        // --- 圖片錯誤處理 (防止萬一的優雅降級) ---
+        // --- 圖片錯誤處理 (更優雅的備用圖案，但這次應該用不到了) ---
         function replaceWithSVG(imgElement, keyword) {
-            const width = imgElement.width || 800;
-            const height = imgElement.height || 600;
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-                <rect width="100%" height="100%" fill="#fce7f3"/>
-                <circle cx="${width/2}" cy="${height/2}" r="80" fill="#fbcfe8" opacity="0.5"/>
-                <circle cx="${width/2}" cy="${height/2}" r="60" fill="#f9a8d4" opacity="0.5"/>
-                <text x="50%" y="50%" font-family="sans-serif" font-weight="bold" font-size="24" fill="#db2777" dominant-baseline="middle" text-anchor="middle">
-                    ${keyword} 
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+                <rect width="100%" height="100%" fill="#fdf2f8"/>
+                <circle cx="400" cy="300" r="150" fill="#fce7f3"/>
+                <text x="50%" y="48%" font-family="sans-serif" font-weight="bold" font-size="36" fill="#db2777" dominant-baseline="middle" text-anchor="middle">
+                    ${keyword}
+                </text>
+                <text x="50%" y="56%" font-family="sans-serif" font-size="16" fill="#9d174d" dominant-baseline="middle" text-anchor="middle">
+                    (日本風情掠影)
                 </text>
             </svg>`;
             imgElement.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
@@ -363,7 +387,7 @@
             gojuon.forEach(item => {
                 const div = document.createElement('div');
                 if (item.r === '') {
-                    div.className = 'invisible';
+                    div.className = 'invisible'; 
                 } else {
                     div.className = 'kana-card bg-white border-2 border-gray-100 rounded-xl p-4 text-center cursor-pointer flex flex-col items-center justify-center min-h-[80px] md:min-h-[100px]';
                     const mainChar = currentType === 'hiragana' ? item.h : item.k;
@@ -393,12 +417,12 @@
 
         renderKana();
 
-        // --- 富文本彈出視窗資料 (使用維基圖片) ---
+        // --- 富文本彈出視窗資料 (使用最穩定的維基百科圖庫) ---
         const modalData = {
             chado: {
                 title: "茶道 (Chadō)",
                 subtitle: "一期一會的待客之道",
-                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Japanese_tea_ceremony.jpg?width=1200",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Japanese_tea_ceremony_1.jpg/800px-Japanese_tea_ceremony_1.jpg",
                 content: `
                     <p>日本茶道不僅僅是喝茶，它是一門融合了空間設計、花藝、陶藝與人際互動的綜合藝術。透過繁瑣且嚴謹的儀式，達到內心的平靜。</p>
                     
@@ -430,7 +454,7 @@
             matsuri: {
                 title: "祭典 (Matsuri)",
                 subtitle: "與神同樂的狂歡時刻",
-                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Minami_Kannonyama_Gion_Matsuri_Yoiyama.jpg?width=1200",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Aomori_Nebuta_Matsuri_2010.jpg/800px-Aomori_Nebuta_Matsuri_2010.jpg",
                 content: `
                     <p>日本的祭典多半起源於向神明祈求豐收、驅除瘟疫。如今不僅是宗教儀式，更是凝聚地方居民情感、吸引全球觀光客的重要文化資產。</p>
                     
@@ -464,7 +488,7 @@
             onsen: {
                 title: "溫泉 (Onsen)",
                 subtitle: "洗滌身心的火山恩賜",
-                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Onsen_in_Nachikatsuura,_Japan.jpg?width=1200",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Kusatsu_onsen08s3200.jpg/800px-Kusatsu_onsen08s3200.jpg",
                 content: `
                     <p>日本位於環太平洋火山帶，擁有近三萬個溫泉源頭。泡湯不僅為了清潔，更被視為治療疾病（湯治）與放鬆精神的極致享受。</p>
 
@@ -496,7 +520,7 @@
             kyoto: {
                 title: "京都 (Kyoto)",
                 subtitle: "穿越千年的優雅古都",
-                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kiyomizu.jpg?width=1200",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Kiyomizu-dera_in_Kyoto-HDR.jpg/800px-Kiyomizu-dera_in_Kyoto-HDR.jpg",
                 content: `
                     <p>從西元794年建都「平安京」開始，京都作為日本首都長達千年以上。這裡擁有17處聯合國教科文組織世界遺產，是體驗日本歷史底蘊的最佳地點。</p>
 
@@ -527,7 +551,7 @@
             tokyo: {
                 title: "東京 (Tokyo)",
                 subtitle: "傳統與未來的極致交匯",
-                image: "https://commons.wikimedia.org/wiki/Special:FilePath/The_One_Minutes_at_Shibuya_Crossing_in_Tokyo_for_EASTEAST_2.jpg?width=1200",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Shibuya_Crossing_2018.jpg/800px-Shibuya_Crossing_2018.jpg",
                 content: `
                     <p>全球人口最密集的都會區之一。東京是一座不可思議的城市，你可以在摩天大樓旁發現百年的古老神社，科技與傳統完美共存。</p>
 
@@ -557,7 +581,7 @@
             sushi: {
                 title: "壽司 (Sushi)",
                 subtitle: "職人精神的海洋藝術",
-                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Nigiri_sushi.jpg?width=1200",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Nigirisushi.jpg/800px-Nigirisushi.jpg",
                 content: `
                     <p>壽司是日本料理在世界上的代名詞。看似簡單的「醋飯＋生魚片」，其實蘊含了職人對溫度、刀工、熟成時間的極致講究。</p>
 
@@ -589,7 +613,7 @@
             ramen: {
                 title: "拉麵 (Ramen)",
                 subtitle: "百家爭鳴的國民靈魂美食",
-                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Shoyu_ramen.jpg?width=1200",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Shoyu_Ramen.jpg/800px-Shoyu_Ramen.jpg",
                 content: `
                     <p>拉麵雖然發源於中國，但在日本發展出了獨樹一格的龐大體系。從湯頭、麵條粗細到配料，每家店都有自己的秘方，是日本最普及的庶民美食。</p>
 
@@ -621,6 +645,7 @@
             }
         };
 
+        // --- Modal 控制邏輯 ---
         const modalBackdrop = document.getElementById('modal-backdrop');
         const modalPanel = document.getElementById('modal-panel');
 
@@ -628,6 +653,7 @@
             const data = modalData[id];
             if(!data) return;
 
+            // 填充內容
             document.getElementById('modal-title').textContent = data.title;
             document.getElementById('modal-subtitle').textContent = data.subtitle;
             const imgEl = document.getElementById('modal-image');
@@ -636,29 +662,34 @@
             
             document.getElementById('modal-body').innerHTML = data.content;
 
+            // 顯示 Modal
             modalBackdrop.classList.remove('hidden');
+            // 觸發動畫，並鎖定背景滾動
             setTimeout(() => {
                 modalBackdrop.classList.remove('opacity-0');
                 modalPanel.classList.remove('modal-enter', 'modal-leave-active');
                 modalPanel.classList.add('modal-enter-active');
+                // 將彈出視窗內的卷軸移到最上面
+                modalPanel.scrollTop = 0; 
             }, 10);
             
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; 
         }
 
         function closeModal(e) {
             if (e && e.target !== modalBackdrop && e.target.closest('#modal-panel')) {
-                return;
+                return; // 如果點擊在面板內部，不關閉
             }
             
+            // 退場動畫
             modalBackdrop.classList.add('opacity-0');
             modalPanel.classList.remove('modal-enter-active');
             modalPanel.classList.add('modal-leave-active');
             
             setTimeout(() => {
                 modalBackdrop.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }, 300);
+                document.body.style.overflow = 'auto'; // 恢復背景滾動
+            }, 300); 
         }
     </script>
 </body>
