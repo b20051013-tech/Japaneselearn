@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>探索日本｜日語學習與文化導覽</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Noto Serif TC"', 'serif'],
+                    },
+                    colors: {
+                        sakura: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            500: '#ec4899',
+                            600: '#db2777',
+                            800: '#9d174d',
+                        },
+                        matcha: {
+                            500: '#84cc16',
+                            700: '#4d7c0f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定義樣式與動畫 */
+        body { background-color: #fafaf9; }
+        .kana-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+        .kana-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.3);
+            border-color: #fbcfe8;
+        }
+        .modal-enter { opacity: 0; transform: scale(0.95) translateY(20px); }
+        .modal-enter-active { opacity: 1; transform: scale(1) translateY(0); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-leave { opacity: 1; transform: scale(1) translateY(0); }
+        .modal-leave-active { opacity: 0; transform: scale(0.95) translateY(20px); transition: all 0.3s ease; }
+        
+        /* 彈出視窗內的富文本排版 */
+        .rich-content h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #db2777;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #fce7f3;
+            padding-bottom: 0.5rem;
+            font-family: 'Noto Serif TC', serif;
+        }
+        .rich-content h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .rich-content h4 i {
+            color: #ec4899;
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .rich-content p {
+            color: #4b5563;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+        .rich-content ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .rich-content ul li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+        }
+        .rich-content ul li::before {
+            content: "🌸";
+            position: absolute;
+            left: 0;
+            top: 0px;
+            font-size: 0.9rem;
+        }
+        .vocab-box {
+            background: #fdf2f8;
+            border-left: 4px solid #ec4899;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin-top: 1.5rem;
+        }
+        .image-zoom-container { overflow: hidden; }
+        .image-zoom-container img { transition: transform 0.7s ease; }
+        .group:hover .image-zoom-container img { transform: scale(1.05); }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800">
+
+    <!-- 導覽列 -->
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-40 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="text-2xl text-sakura-600 mr-2"><i class="fas fa-torii-gate"></i></span>
+                    <span class="font-serif font-bold text-xl tracking-wider text-gray-900">探索日本</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#gojuon" class="text-gray-600 hover:text-sakura-600 transition-colors font-medium">五十音學習</a>
+                    <a href="#culture" class="text-gray-600 hover:text-sakura-600 transition-colors font-medium">文化體驗</a>
+                    <a href="#travel" class="text-gray-600 hover:text-sakura-600 transition-colors font-medium">景點與美食</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 頁首 Hero 區塊 -->
+    <header class="relative pt-24 pb-32 flex items-center justify-center min-h-[80vh] overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <!-- 使用維基共享資源的高畫質富士山與櫻花圖片 -->
+            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mount_Fuji_and_Chureito_Pagoda_in_Spring.jpg?width=1920" 
+                 alt="櫻花背景" 
+                 class="w-full h-full object-cover opacity-60"
+                 crossorigin="anonymous">
+            <div class="absolute inset-0 bg-gradient-to-b from-white/70 via-white/40 to-[#fafaf9]"></div>
+        </div>
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+            <h1 class="text-5xl md:text-7xl font-serif font-bold text-gray-900 mb-6 tracking-tight shadow-sm">
+                從<span class="text-sakura-600">語言</span>看見日本之美
+            </h1>
+            <p class="text-lg md:text-2xl text-gray-700 mb-10 font-light tracking-wide">
+                一站式學習五十音、探索深度的傳統文化與必訪景點。
+            </p>
+            <a href="#gojuon" class="inline-flex items-center px-8 py-4 bg-sakura-600 text-white rounded-full font-bold text-lg hover:bg-sakura-800 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-sakura-500/50">
+                開始學習之旅 <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- 五十音學習區 -->
+    <section id="gojuon" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">基礎：五十音學習</h2>
+                <div class="w-24 h-1 bg-sakura-500 mx-auto rounded-full mb-6"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto">點擊按鈕切換平假名與片假名。這是學習日文的第一步，試著唸出羅馬拼音吧！</p>
+                
+                <div class="mt-8 flex justify-center space-x-4">
+                    <button id="btn-hiragana" onclick="switchKana('hiragana')" class="px-6 py-2 rounded-full bg-sakura-600 text-white font-bold transition-all shadow-md">平假名 (Hiragana)</button>
+                    <button id="btn-katakana" onclick="switchKana('katakana')" class="px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-bold hover:bg-gray-300 transition-all">片假名 (Katakana)</button>
+                </div>
+            </div>
+
+            <div id="kana-grid" class="grid grid-cols-5 gap-3 md:gap-6 max-w-4xl mx-auto">
+                <!-- 由 JS 生成 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 日本文化區 -->
+    <section id="culture" class="py-20 bg-sakura-50/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">探索：傳統文化</h2>
+                <div class="w-24 h-1 bg-sakura-500 mx-auto rounded-full mb-6"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto">日本文化講究「道」與「細節」。點擊卡片深入了解這些傳承千年的精神。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- 文化卡片：茶道 (維基真實照片) -->
+                <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100" onclick="openModal('chado')">
+                    <div class="relative h-64 image-zoom-container">
+                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Japanese_tea_ceremony.jpg?width=800" alt="茶道" crossorigin="anonymous" onerror="replaceWithSVG(this, '茶道')" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all"></div>
+                    </div>
+                    <div class="p-6 relative">
+                        <div class="absolute -top-6 right-6 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg text-matcha-500 text-xl"><i class="fas fa-leaf"></i></div>
+                        <h3 class="text-2xl font-serif font-bold mb-2 group-hover:text-sakura-600 transition-colors">茶道 (Chadō)</h3>
+                        <p class="text-gray-600 mb-4 line-clamp-2">體現「和敬清寂」精神的傳統藝術，從泡茶到品茶皆是修行。</p>
+                        <span class="text-sakura-600 font-semibold flex items-center group-hover:translate-x-2 transition-transform">深入閱讀 <i class="fas fa-arrow-right ml-2 text-sm"></i></span>
+                    </div>
+                </div>
+
+                <!-- 文化卡片：祭典 (京都祇園祭真實照片) -->
+                <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100" onclick="openModal('matsuri')">
+                    <div class="relative h-64 image-zoom-container">
+                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Minami_Kannonyama_Gion_Matsuri_Yoiyama.jpg?width=800" alt="祭典" crossorigin="anonymous" onerror="replaceWithSVG(this, '祭典')" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 relative">
+                        <div class="absolute -top-6 right-6 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg text-orange-500 text-xl"><i class="fas fa-fire"></i></div>
+                        <h3 class="text-2xl font-serif font-bold mb-2 group-hover:text-sakura-600 transition-colors">祭典 (Matsuri)</h3>
+                        <p class="text-gray-600 mb-4 line-clamp-2">充滿活力的神明慶典，伴隨太鼓、神轎與絢爛的花火。</p>
+                        <span class="text-sakura-600 font-semibold flex items-center group-hover:translate-x-2 transition-transform">深入閱讀 <i class="fas fa-arrow-right ml-2 text-sm"></i></span>
+                    </div>
+                </div>
+
+                <!-- 文化卡片：溫泉 (那智勝浦露天溫泉真實照片) -->
+                <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100" onclick="openModal('onsen')">
+                    <div class="relative h-64 image-zoom-container">
+                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Onsen_in_Nachikatsuura,_Japan.jpg?width=800" alt="溫泉" crossorigin="anonymous" onerror="replaceWithSVG(this, '溫泉')" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 relative">
+                        <div class="absolute -top-6 right-6 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg text-blue-500 text-xl"><i class="fas fa-hot-tub"></i></div>
+                        <h3 class="text-2xl font-serif font-bold mb-2 group-hover:text-sakura-600 transition-colors">溫泉 (Onsen)</h3>
+                        <p class="text-gray-600 mb-4 line-clamp-2">火山國度的天然恩賜，獨特的泡湯禮儀與放鬆身心的極致享受。</p>
+                        <span class="text-sakura-600 font-semibold flex items-center group-hover:translate-x-2 transition-transform">深入閱讀 <i class="fas fa-arrow-right ml-2 text-sm"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 景點與美食區 -->
+    <section id="travel" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">行旅：景點與美食</h2>
+                <div class="w-24 h-1 bg-sakura-500 mx-auto rounded-full mb-6"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto">從古典京都到繁華東京，從精緻壽司到濃郁拉麵，發掘日本的多元魅力。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <!-- 京都 (清水寺真實照片) -->
+                <div class="group flex flex-col sm:flex-row bg-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer" onclick="openModal('kyoto')">
+                    <div class="sm:w-2/5 h-48 sm:h-auto image-zoom-container relative">
+                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Kiyomizu.jpg?width=800" alt="京都" crossorigin="anonymous" onerror="replaceWithSVG(this, '京都')" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 sm:w-3/5 flex flex-col justify-center bg-white border-y border-r border-gray-100 rounded-r-2xl">
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-sakura-600 transition-colors">千年古都：京都</h3>
+                        <p class="text-gray-600 mb-4">穿梭在清水寺與伏見稻荷大社的鳥居中，感受時光凝結的優雅。</p>
+                        <span class="text-sakura-600 font-semibold mt-auto inline-block">探索地標推薦 <i class="fas fa-arrow-right ml-1"></i></span>
+                    </div>
+                </div>
+
+                <!-- 東京 (澀谷十字路口真實照片) -->
+                <div class="group flex flex-col sm:flex-row bg-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer" onclick="openModal('tokyo')">
+                    <div class="sm:w-2/5 h-48 sm:h-auto image-zoom-container relative">
+                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/The_One_Minutes_at_Shibuya_Crossing_in_Tokyo_for_EASTEAST_2.jpg?width=800" alt="東京" crossorigin="anonymous" onerror="replaceWithSVG(this, '東京')" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 sm:w-3/5 flex flex-col justify-center bg-white border-y border-r border-gray-100 rounded-r-2xl">
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-sakura-600 transition-colors">大都會：東京</h3>
+                        <p class="text-gray-600 mb-4">結合世界頂尖科技與傳統神社，體驗不夜城的新宿與次文化聖地秋葉原。</p>
+                        <span class="text-sakura-600 font-semibold mt-auto inline-block">探索地標推薦 <i class="fas fa-arrow-right ml-1"></i></span>
+                    </div>
+                </div>
+
+                <!-- 壽司 -->
+                <div class="group flex flex-col sm:flex-row bg-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer" onclick="openModal('sushi')">
+                    <div class="sm:w-2/5 h-48 sm:h-auto image-zoom-container relative">
+                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Nigiri_sushi.jpg?width=800" alt="壽司" crossorigin="anonymous" onerror="replaceWithSVG(this, '壽司')" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 sm:w-3/5 flex flex-col justify-center bg-white border-y border-r border-gray-100 rounded-r-2xl">
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-sakura-600 transition-colors">美食藝術：壽司</h3>
+                        <p class="text-gray-600 mb-4">新鮮海產與醋飯的完美結合，了解握壽司的講究與道地吃法。</p>
+                        <span class="text-sakura-600 font-semibold mt-auto inline-block">了解壽司種類 <i class="fas fa-arrow-right ml-1"></i></span>
+                    </div>
+                </div>
+
+                <!-- 拉麵 -->
+                <div class="group flex flex-col sm:flex-row bg-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer" onclick="openModal('ramen')">
+                    <div class="sm:w-2/5 h-48 sm:h-auto image-zoom-container relative">
+                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Shoyu_ramen.jpg?width=800" alt="拉麵" crossorigin="anonymous" onerror="replaceWithSVG(this, '拉麵')" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 sm:w-3/5 flex flex-col justify-center bg-white border-y border-r border-gray-100 rounded-r-2xl">
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-sakura-600 transition-colors">靈魂料理：拉麵</h3>
+                        <p class="text-gray-600 mb-4">濃郁湯頭與勁道麵條，探索豚骨、醬油、味噌與鹽味四大流派。</p>
+                        <span class="text-sakura-600 font-semibold mt-auto inline-block">了解拉麵流派 <i class="fas fa-arrow-right ml-1"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer class="bg-gray-900 text-gray-300 py-10">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="mb-4">© 2026 探索日本｜學習與導覽網。Built for GitHub Pages.</p>
+            <p class="text-sm text-gray-500">圖片來源：Wikimedia Commons / 設計：日系美學 SPA</p>
+        </div>
+    </footer>
+
+    <!-- 共用彈出視窗 (Modal) -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/60 z-50 hidden backdrop-blur-sm transition-opacity duration-300 opacity-0" onclick="closeModal(event)">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div id="modal-panel" class="relative bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:max-w-3xl w-full modal-enter" onclick="event.stopPropagation()">
+                <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-10 h-10 bg-white/50 backdrop-blur rounded-full flex items-center justify-center text-gray-800 hover:bg-white hover:text-sakura-600 transition-colors shadow">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                
+                <div class="h-64 sm:h-80 w-full relative">
+                    <img id="modal-image" src="" alt="Modal Image" crossorigin="anonymous" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
+                </div>
+                
+                <div class="px-6 sm:px-10 py-8 relative -mt-16">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-100">
+                        <h2 id="modal-title" class="text-3xl sm:text-4xl font-serif font-bold text-gray-900 mb-2">標題</h2>
+                        <p id="modal-subtitle" class="text-lg text-sakura-600 font-medium mb-6">副標題</p>
+                        
+                        <div id="modal-body" class="rich-content">
+                            <!-- 內容生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 圖片錯誤處理 (防止萬一的優雅降級) ---
+        function replaceWithSVG(imgElement, keyword) {
+            const width = imgElement.width || 800;
+            const height = imgElement.height || 600;
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+                <rect width="100%" height="100%" fill="#fce7f3"/>
+                <circle cx="${width/2}" cy="${height/2}" r="80" fill="#fbcfe8" opacity="0.5"/>
+                <circle cx="${width/2}" cy="${height/2}" r="60" fill="#f9a8d4" opacity="0.5"/>
+                <text x="50%" y="50%" font-family="sans-serif" font-weight="bold" font-size="24" fill="#db2777" dominant-baseline="middle" text-anchor="middle">
+                    ${keyword} 
+                </text>
+            </svg>`;
+            imgElement.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+            imgElement.onerror = null; 
+        }
+
+        // --- 五十音資料 ---
+        const gojuon = [
+            { h: 'あ', k: 'ア', r: 'a' }, { h: 'い', k: 'イ', r: 'i' }, { h: 'う', k: 'ウ', r: 'u' }, { h: 'え', k: 'エ', r: 'e' }, { h: 'お', k: 'オ', r: 'o' },
+            { h: 'か', k: 'カ', r: 'ka' }, { h: 'き', k: 'キ', r: 'ki' }, { h: 'く', k: 'ク', r: 'ku' }, { h: 'け', k: 'ケ', r: 'ke' }, { h: 'こ', k: 'コ', r: 'ko' },
+            { h: 'さ', k: 'サ', r: 'sa' }, { h: 'し', k: 'シ', r: 'shi' }, { h: 'す', k: 'ス', r: 'su' }, { h: 'せ', k: 'セ', r: 'se' }, { h: 'そ', k: 'ソ', r: 'so' },
+            { h: 'た', k: 'タ', r: 'ta' }, { h: 'ち', k: 'チ', r: 'chi' }, { h: 'つ', k: 'ツ', r: 'tsu' }, { h: 'て', k: 'テ', r: 'te' }, { h: 'と', k: 'ト', r: 'to' },
+            { h: 'な', k: 'ナ', r: 'na' }, { h: 'に', k: 'ニ', r: 'ni' }, { h: 'ぬ', k: 'ヌ', r: 'nu' }, { h: 'ね', k: 'ネ', r: 'ne' }, { h: 'の', k: 'ノ', r: 'no' },
+            { h: 'は', k: 'ハ', r: 'ha' }, { h: 'ひ', k: 'ヒ', r: 'hi' }, { h: 'ふ', k: 'フ', r: 'fu' }, { h: 'へ', k: 'ヘ', r: 'he' }, { h: 'ほ', k: 'ホ', r: 'ho' },
+            { h: 'ま', k: 'マ', r: 'ma' }, { h: 'み', k: 'ミ', r: 'mi' }, { h: 'む', k: 'ム', r: 'mu' }, { h: 'め', k: 'メ', r: 'me' }, { h: 'も', k: 'モ', r: 'mo' },
+            { h: 'や', k: 'ヤ', r: 'ya' }, { h: '', k: '', r: '' }, { h: 'ゆ', k: 'ユ', r: 'yu' }, { h: '', k: '', r: '' }, { h: 'よ', k: 'ヨ', r: 'yo' },
+            { h: 'ら', k: 'ラ', r: 'ra' }, { h: 'り', k: 'リ', r: 'ri' }, { h: 'る', k: 'ル', r: 'ru' }, { h: 'れ', k: 'レ', r: 're' }, { h: 'ろ', k: 'ロ', r: 'ro' },
+            { h: 'わ', k: 'ワ', r: 'wa' }, { h: '', k: '', r: '' }, { h: '', k: '', r: '' }, { h: '', k: '', r: '' }, { h: 'を', k: 'ヲ', r: 'wo' },
+            { h: 'ん', k: 'ン', r: 'n' }, { h: '', k: '', r: '' }, { h: '', k: '', r: '' }, { h: '', k: '', r: '' }, { h: '', k: '', r: '' }
+        ];
+
+        let currentType = 'hiragana';
+        const grid = document.getElementById('kana-grid');
+
+        function renderKana() {
+            grid.innerHTML = '';
+            gojuon.forEach(item => {
+                const div = document.createElement('div');
+                if (item.r === '') {
+                    div.className = 'invisible';
+                } else {
+                    div.className = 'kana-card bg-white border-2 border-gray-100 rounded-xl p-4 text-center cursor-pointer flex flex-col items-center justify-center min-h-[80px] md:min-h-[100px]';
+                    const mainChar = currentType === 'hiragana' ? item.h : item.k;
+                    div.innerHTML = `
+                        <span class="text-3xl md:text-4xl font-bold text-gray-800 mb-1 font-serif">${mainChar}</span>
+                        <span class="text-xs md:text-sm text-sakura-500 font-mono tracking-wider">${item.r}</span>
+                    `;
+                }
+                grid.appendChild(div);
+            });
+        }
+
+        function switchKana(type) {
+            currentType = type;
+            const btnH = document.getElementById('btn-hiragana');
+            const btnK = document.getElementById('btn-katakana');
+            
+            if (type === 'hiragana') {
+                btnH.className = 'px-6 py-2 rounded-full bg-sakura-600 text-white font-bold transition-all shadow-md';
+                btnK.className = 'px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-bold hover:bg-gray-300 transition-all';
+            } else {
+                btnK.className = 'px-6 py-2 rounded-full bg-sakura-600 text-white font-bold transition-all shadow-md';
+                btnH.className = 'px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-bold hover:bg-gray-300 transition-all';
+            }
+            renderKana();
+        }
+
+        renderKana();
+
+        // --- 富文本彈出視窗資料 (使用維基圖片) ---
+        const modalData = {
+            chado: {
+                title: "茶道 (Chadō)",
+                subtitle: "一期一會的待客之道",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Japanese_tea_ceremony.jpg?width=1200",
+                content: `
+                    <p>日本茶道不僅僅是喝茶，它是一門融合了空間設計、花藝、陶藝與人際互動的綜合藝術。透過繁瑣且嚴謹的儀式，達到內心的平靜。</p>
+                    
+                    <h3>一、 千利休與四大精神</h3>
+                    <p>十六世紀的茶聖「千利休」確立了現代茶道的基礎，並提出了著名的「四規」：</p>
+                    <ul>
+                        <li><strong>和 (Wa)：</strong>人與人、人與大自然之間的和諧。</li>
+                        <li><strong>敬 (Kei)：</strong>主客之間互相尊敬，也尊崇茶具與環境。</li>
+                        <li><strong>清 (Sei)：</strong>保持茶室環境與內心思想的清淨無垢。</li>
+                        <li><strong>寂 (Jaku)：</strong>去除多餘的慾望，達到寧靜安詳的境界。</li>
+                    </ul>
+
+                    <h3>二、 茶室體驗流程重點</h3>
+                    <h4><i class="fas fa-door-open"></i>1. 躙口 (Nijiriguchi)</h4>
+                    <p>茶室特有的小入口，無論身分高低，客人都必須低頭彎腰爬進去，象徵在茶室內人人平等。</p>
+                    <h4><i class="fas fa-mug-hot"></i>2. 品茶禮儀</h4>
+                    <p>主人奉茶後，客人需將茶碗順時針轉動兩次，避免用嘴唇碰觸到茶碗正面的精美花紋，以示對茶具的尊重。</p>
+
+                    <div class="vocab-box">
+                        <h4 style="margin-top:0"><i class="fas fa-book"></i> 實用單字</h4>
+                        <ul style="margin-bottom:0">
+                            <li><strong>抹茶 (Matcha)：</strong>綠茶粉</li>
+                            <li><strong>茶室 (Chashitsu)：</strong>專門用來舉辦茶會的房間</li>
+                            <li><strong>一期一會 (Ichigo Ichie)：</strong>珍惜每一次相遇，因為一生可能只有這一次。</li>
+                        </ul>
+                    </div>
+                `
+            },
+            matsuri: {
+                title: "祭典 (Matsuri)",
+                subtitle: "與神同樂的狂歡時刻",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Minami_Kannonyama_Gion_Matsuri_Yoiyama.jpg?width=1200",
+                content: `
+                    <p>日本的祭典多半起源於向神明祈求豐收、驅除瘟疫。如今不僅是宗教儀式，更是凝聚地方居民情感、吸引全球觀光客的重要文化資產。</p>
+                    
+                    <h3>一、 日本三大祭典</h3>
+                    <p>被譽為日本最具代表性的三大祭，每年吸引數百萬人參與：</p>
+                    <h4><i class="fas fa-torii-gate"></i>1. 京都 祇園祭 (Gion Matsuri)</h4>
+                    <p>有千年歷史，於每年7月舉行。最著名的是裝飾華麗的巨大「山鉾」巡行，是京都夏日的風物詩。</p>
+                    <h4><i class="fas fa-water"></i>2. 大阪 天神祭 (Tenjin Matsuri)</h4>
+                    <p>結合了陸地上的「陸渡御」與河川上的「船渡御」，夜間水面上的船隻點燃燈籠，並施放壯觀的奉納煙火。</p>
+                    <h4><i class="fas fa-drum"></i>3. 東京 神田祭 (Kanda Matsuri)</h4>
+                    <p>江戶時代傳承至今，充滿了江戶男兒的豪氣，神轎隊伍穿梭在現代化的東京街頭，形成強烈對比。</p>
+
+                    <h3>二、 屋台 (路邊攤) 必吃美食</h3>
+                    <p>參加祭典絕對不能錯過參道兩旁的「屋台」，這是體驗庶民美食的最佳時機：</p>
+                    <ul>
+                        <li><strong>たこ焼き (Takoyaki)：</strong>章魚燒，外酥內軟。</li>
+                        <li><strong>焼きそば (Yakisoba)：</strong>日式炒麵，醬汁香氣四溢。</li>
+                        <li><strong>りんご飴 (Ringo Ame)：</strong>蘋果糖，祭典中最具代表性的甜點。</li>
+                    </ul>
+
+                    <div class="vocab-box">
+                        <h4 style="margin-top:0"><i class="fas fa-book"></i> 實用單字</h4>
+                        <ul style="margin-bottom:0">
+                            <li><strong>神輿 (Mikoshi)：</strong>神明乘坐的轎子。</li>
+                            <li><strong>花火 (Hanabi)：</strong>煙火。</li>
+                            <li><strong>浴衣 (Yukata)：</strong>夏季輕薄的和服，祭典常見穿著。</li>
+                        </ul>
+                    </div>
+                `
+            },
+            onsen: {
+                title: "溫泉 (Onsen)",
+                subtitle: "洗滌身心的火山恩賜",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Onsen_in_Nachikatsuura,_Japan.jpg?width=1200",
+                content: `
+                    <p>日本位於環太平洋火山帶，擁有近三萬個溫泉源頭。泡湯不僅為了清潔，更被視為治療疾病（湯治）與放鬆精神的極致享受。</p>
+
+                    <h3>一、 泡湯的嚴格禮儀</h3>
+                    <p>在日本泡大眾裸湯，有幾項必須遵守的潛規則：</p>
+                    <h4><i class="fas fa-shower"></i>1. 入浴前必須洗淨身體</h4>
+                    <p>進入浴池前，務必在旁邊的淋浴區（洗い場）將全身洗乾淨。這是為了維持溫泉水質的純淨。</p>
+                    <h4><i class="fas fa-towel"></i>2. 毛巾絕對不能泡入水中</h4>
+                    <p>帶進浴場的小毛巾只能放在頭頂或池邊，絕不可以放入浴池內搓洗或浸泡，以免污染水質。</p>
+                    <h4><i class="fas fa-ban"></i>3. 刺青限制</h4>
+                    <p>傳統上，有刺青者（無論大小）通常被禁止進入大眾池。不過現在有部分溫泉接受使用膚色貼布遮蓋後入浴。</p>
+
+                    <h3>二、 知名溫泉鄉推薦</h3>
+                    <ul>
+                        <li><strong>草津溫泉 (群馬縣)：</strong>以強酸性泉質與傳統的「揉湯」表演聞名。</li>
+                        <li><strong>箱根溫泉 (神奈川縣)：</strong>距離東京近，可邊泡湯邊遠眺富士山。</li>
+                        <li><strong>由布院溫泉 (大分縣)：</strong>充滿藝術氣息與晨霧繚繞的夢幻溫泉鄉。</li>
+                    </ul>
+
+                    <div class="vocab-box">
+                        <h4 style="margin-top:0"><i class="fas fa-book"></i> 實用單字</h4>
+                        <ul style="margin-bottom:0">
+                            <li><strong>露天風呂 (Rotenburo)：</strong>戶外溫泉。</li>
+                            <li><strong>男湯 / 女湯 (Otokoyu / Onnayu)：</strong>男性專用 / 女性專用浴場。</li>
+                        </ul>
+                    </div>
+                `
+            },
+            kyoto: {
+                title: "京都 (Kyoto)",
+                subtitle: "穿越千年的優雅古都",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kiyomizu.jpg?width=1200",
+                content: `
+                    <p>從西元794年建都「平安京」開始，京都作為日本首都長達千年以上。這裡擁有17處聯合國教科文組織世界遺產，是體驗日本歷史底蘊的最佳地點。</p>
+
+                    <h3>一、 必訪世界遺產清單</h3>
+                    <h4><i class="fas fa-mountain"></i>1. 清水寺 (Kiyomizu-dera)</h4>
+                    <p>懸空的「清水舞台」沒有使用一根釘子，由139根巨木支撐，秋季時被滿山紅葉包圍，壯觀無比。</p>
+                    <h4><i class="fas fa-archway"></i>2. 伏見稻荷大社 (Fushimi Inari Taisha)</h4>
+                    <p>供奉農業與商業之神。最震撼的是由信徒捐贈的「千本鳥居」，綿延不絕的朱紅色隧道一路延伸至山頂。</p>
+                    <h4><i class="fas fa-vihara"></i>3. 金閣寺 (Kinkaku-ji)</h4>
+                    <p>正式名稱為鹿苑寺。建築外牆貼滿了純金箔，在陽光照射與水面倒影交織下，閃耀著極樂世界般的光芒。</p>
+
+                    <h3>二、 深度文化體驗</h3>
+                    <ul>
+                        <li><strong>和服散策：</strong>在祇園或清水坂租借和服，漫步在石板路上，是最受歡迎的體驗。</li>
+                        <li><strong>川床料理：</strong>夏季限定，在貴船或鴨川的水面上搭建平台用餐，享受天然的冷氣。</li>
+                    </ul>
+
+                    <div class="vocab-box">
+                        <h4 style="margin-top:0"><i class="fas fa-book"></i> 實用單字</h4>
+                        <ul style="margin-bottom:0">
+                            <li><strong>寺 (Tera/Ji)：</strong>佛教寺院（如清水寺）。</li>
+                            <li><strong>神社 (Jinja)：</strong>神道教信仰中心（如八坂神社）。</li>
+                            <li><strong>おおきに (Ookini)：</strong>京都方言的「謝謝」。</li>
+                        </ul>
+                    </div>
+                `
+            },
+            tokyo: {
+                title: "東京 (Tokyo)",
+                subtitle: "傳統與未來的極致交匯",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/The_One_Minutes_at_Shibuya_Crossing_in_Tokyo_for_EASTEAST_2.jpg?width=1200",
+                content: `
+                    <p>全球人口最密集的都會區之一。東京是一座不可思議的城市，你可以在摩天大樓旁發現百年的古老神社，科技與傳統完美共存。</p>
+
+                    <h3>一、 經典地標巡禮</h3>
+                    <h4><i class="fas fa-broadcast-tower"></i>1. 東京鐵塔與晴空塔</h4>
+                    <p>紅白相間的東京鐵塔是昭和時代的浪漫象徵；而高達634公尺的晴空塔則是現代東京的最高地標。</p>
+                    <h4><i class="fas fa-street-view"></i>2. 澀谷十字路口 (Shibuya Scramble)</h4>
+                    <p>號稱世界上最繁忙的十字路口。當綠燈亮起，上千人同時穿梭馬路卻不會互撞，場面極度震撼。</p>
+                    <h4><i class="fas fa-place-of-worship"></i>3. 淺草寺 (Senso-ji)</h4>
+                    <p>東京最古老的寺廟。入口處懸掛著巨大紅燈籠的「雷門」是東京最具代表性的拍照景點。</p>
+
+                    <h3>二、 次文化與購物天堂</h3>
+                    <ul>
+                        <li><strong>秋葉原 (Akihabara)：</strong>動漫、遊戲與電子產品的聖地，路上隨處可見女僕咖啡廳。</li>
+                        <li><strong>銀座 (Ginza)：</strong>高端精品店林立，週末會有「步行者天國」（封街禁行車輛），享受頂級逛街體驗。</li>
+                    </ul>
+
+                    <div class="vocab-box">
+                        <h4 style="margin-top:0"><i class="fas fa-book"></i> 實用對話</h4>
+                        <ul style="margin-bottom:0">
+                            <li><strong>駅はどこですか？ (Eki wa doko desu ka?)：</strong>請問車站在哪裡？</li>
+                            <li><strong>これをお願いします (Kore o onegai shimasu)：</strong>請給我這個（點餐/結帳用）。</li>
+                        </ul>
+                    </div>
+                `
+            },
+            sushi: {
+                title: "壽司 (Sushi)",
+                subtitle: "職人精神的海洋藝術",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Nigiri_sushi.jpg?width=1200",
+                content: `
+                    <p>壽司是日本料理在世界上的代名詞。看似簡單的「醋飯＋生魚片」，其實蘊含了職人對溫度、刀工、熟成時間的極致講究。</p>
+
+                    <h3>一、 常見壽司種類</h3>
+                    <h4><i class="fas fa-fish"></i>1. 握壽司 (Nigirizushi)</h4>
+                    <p>將醋飯捏成一口大小的長方體，上方覆蓋魚貝類等食材（稱為「ネタ Neta」）。江戶前壽司的代表。</p>
+                    <h4><i class="fas fa-ship"></i>2. 軍艦卷 (Gunkanmaki)</h4>
+                    <p>用海苔將醋飯圍繞一圈，上方放上容易散落的食材，如海膽、鮭魚卵。</p>
+                    <h4><i class="fas fa-utensils"></i>3. 卷壽司 (Makizushi)</h4>
+                    <p>用竹簾將海苔、醋飯與多種配料捲起。又分為太卷、細卷與手卷。</p>
+
+                    <h3>二、 內行人的食用禮儀</h3>
+                    <ul>
+                        <li><strong>沾醬油的方法：</strong>應該用「魚肉」的那一面去沾醬油，不要讓醋飯吸滿醬油，以免破壞飯的結構與風味。</li>
+                        <li><strong>用手或筷子：</strong>正統的握壽司可以用手直接拿取食用，當然使用筷子也是完全可以接受的。</li>
+                        <li><strong>薑片的作用：</strong>紅薑（Gari）是用來在不同口味的壽司之間清口用的，請勿把它放在壽司上一起吃。</li>
+                    </ul>
+
+                    <div class="vocab-box">
+                        <h4 style="margin-top:0"><i class="fas fa-book"></i> 常見食材單字</h4>
+                        <ul style="margin-bottom:0">
+                            <li><strong>鮪 (Maguro)：</strong>鮪魚。</li>
+                            <li><strong>鮭 (Sake)：</strong>鮭魚。</li>
+                            <li><strong>いくら (Ikura)：</strong>鮭魚卵。</li>
+                        </ul>
+                    </div>
+                `
+            },
+            ramen: {
+                title: "拉麵 (Ramen)",
+                subtitle: "百家爭鳴的國民靈魂美食",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Shoyu_ramen.jpg?width=1200",
+                content: `
+                    <p>拉麵雖然發源於中國，但在日本發展出了獨樹一格的龐大體系。從湯頭、麵條粗細到配料，每家店都有自己的秘方，是日本最普及的庶民美食。</p>
+
+                    <h3>一、 四大拉麵流派</h3>
+                    <h4><i class="fas fa-bowl-food"></i>1. 醬油拉麵 (Shoyu Ramen)</h4>
+                    <p>發源於東京。以清澈的雞骨高湯搭配醬油，是日本拉麵的最基礎與經典口味。</p>
+                    <h4><i class="fas fa-piggy-bank"></i>2. 豚骨拉麵 (Tonkotsu Ramen)</h4>
+                    <p>發源於九州博多。將豬骨長時間熬煮至湯頭呈現乳白色，口感濃郁，通常搭配極細的硬麵條。</p>
+                    <h4><i class="fas fa-fire-burner"></i>3. 味噌拉麵 (Miso Ramen)</h4>
+                    <p>發源於寒冷的北海道札幌。湯頭加入大量味噌與豬油，有助於保持湯底高溫，口味醇厚暖身。</p>
+                    <h4><i class="fas fa-droplet"></i>4. 鹽味拉麵 (Shio Ramen)</h4>
+                    <p>源自函館。湯頭最為清澈透明，僅用鹽巴調味，最能吃出高湯原本的鮮甜。</p>
+
+                    <h3>二、 品嚐拉麵的小知識</h3>
+                    <ul>
+                        <li><strong>大聲吸麵 (Zuzuzu)：</strong>在日本吃拉麵，大聲把麵條「吸」進嘴裡是被鼓勵的。這不僅能讓湯汁與空氣混合提升香氣，也是對廚師表達「好吃」的一種方式。</li>
+                        <li><strong>替玉 (Kaedama)：</strong>吃豚骨拉麵時，如果湯還剩很多但麵吃完了，可以加點「替玉（加一團麵）」。（記得要在湯冷掉前點！）</li>
+                    </ul>
+
+                    <div class="vocab-box">
+                        <h4 style="margin-top:0"><i class="fas fa-book"></i> 拉麵店實用語</h4>
+                        <ul style="margin-bottom:0">
+                            <li><strong>チャーシュー (Chashu)：</strong>叉燒肉。</li>
+                            <li><strong>味玉 (Ajitama)：</strong>半熟調味糖心蛋。</li>
+                            <li><strong>麺硬め (Men katame)：</strong>麵條煮硬一點（點餐時可要求）。</li>
+                        </ul>
+                    </div>
+                `
+            }
+        };
+
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const modalPanel = document.getElementById('modal-panel');
+
+        function openModal(id) {
+            const data = modalData[id];
+            if(!data) return;
+
+            document.getElementById('modal-title').textContent = data.title;
+            document.getElementById('modal-subtitle').textContent = data.subtitle;
+            const imgEl = document.getElementById('modal-image');
+            imgEl.src = data.image;
+            imgEl.onerror = () => replaceWithSVG(imgEl, data.title);
+            
+            document.getElementById('modal-body').innerHTML = data.content;
+
+            modalBackdrop.classList.remove('hidden');
+            setTimeout(() => {
+                modalBackdrop.classList.remove('opacity-0');
+                modalPanel.classList.remove('modal-enter', 'modal-leave-active');
+                modalPanel.classList.add('modal-enter-active');
+            }, 10);
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(e) {
+            if (e && e.target !== modalBackdrop && e.target.closest('#modal-panel')) {
+                return;
+            }
+            
+            modalBackdrop.classList.add('opacity-0');
+            modalPanel.classList.remove('modal-enter-active');
+            modalPanel.classList.add('modal-leave-active');
+            
+            setTimeout(() => {
+                modalBackdrop.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+    </script>
+</body>
+</html>
