@@ -192,6 +192,7 @@
                     <a href="#gojuon" class="text-gray-600 dark:text-gray-300 hover:text-sakura-600 dark:hover:text-sakura-400 transition-colors font-medium">五十音學習</a>
                     <a href="#quiz" class="text-gray-600 dark:text-gray-300 hover:text-sakura-600 dark:hover:text-sakura-400 transition-colors font-medium">拼音挑戰賽</a>
                     <a href="#survival" class="text-gray-600 dark:text-gray-300 hover:text-sakura-600 dark:hover:text-sakura-400 transition-colors font-medium">旅遊會話</a>
+                    <a href="#video-tour" class="text-gray-600 dark:text-gray-300 hover:text-sakura-600 dark:hover:text-sakura-400 transition-colors font-medium">精選影片</a>
                     <a href="#culture" class="text-gray-600 dark:text-gray-300 hover:text-sakura-600 dark:hover:text-sakura-400 transition-colors font-medium">傳統文化</a>
                     <a href="#travel" class="text-gray-600 dark:text-gray-300 hover:text-sakura-600 dark:hover:text-sakura-400 transition-colors font-medium">景點與美食</a>
                     
@@ -216,6 +217,7 @@
             <a href="#gojuon" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-sakura-50 dark:hover:bg-gray-800">五十音學習</a>
             <a href="#quiz" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-sakura-50 dark:hover:bg-gray-800">拼音挑戰賽</a>
             <a href="#survival" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-sakura-50 dark:hover:bg-gray-800">旅遊會話</a>
+            <a href="#video-tour" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-sakura-50 dark:hover:bg-gray-800">精選影片</a>
             <a href="#culture" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-sakura-50 dark:hover:bg-gray-800">傳統文化</a>
             <a href="#travel" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-sakura-50 dark:hover:bg-gray-800">景點與美食</a>
         </div>
@@ -373,6 +375,32 @@
             <!-- 會話列表 -->
             <div id="phrases-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
                 <!-- JS 動態寫入 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 影音導覽區 -->
+    <section id="video-tour" class="py-24 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-sakura-600 dark:text-sakura-400 font-bold uppercase tracking-wider text-sm">Visual Tour</span>
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white mt-2 mb-4">影音專區：精選日本導覽</h2>
+                <div class="w-24 h-1.5 bg-sakura-500 mx-auto rounded-full mb-6"></div>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                    透過精選的影音內容，帶您身歷其境感受日本獨特的魅力風光與人文美學。
+                </p>
+            </div>
+
+            <!-- 影片播放器容器 -->
+            <div class="relative w-full max-w-4xl mx-auto aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-800 bg-black group hover:scale-[1.01] transition-transform duration-300">
+                <iframe 
+                    class="absolute inset-0 w-full h-full" 
+                    src="https://www.youtube.com/embed/q3-_7tao9oQ" 
+                    title="精選日本導覽影片" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
             </div>
         </div>
     </section>
