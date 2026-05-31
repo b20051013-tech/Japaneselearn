@@ -393,14 +393,8 @@
 
             <!-- 影片播放器容器 -->
             <div class="relative w-full max-w-4xl mx-auto aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-800 bg-black group hover:scale-[1.01] transition-transform duration-300">
-                <iframe 
-                    class="absolute inset-0 w-full h-full" 
-                    src="https://www.youtube.com/embed/q3-_7tao9oQ" 
-                    title="精選日本導覽影片" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen>
-                </iframe>
+                <!-- YouTube Iframe API 將在此載入並自動取代此 div -->
+                <div id="youtube-player" class="absolute inset-0 w-full h-full"></div>
             </div>
         </div>
     </section>
@@ -1244,6 +1238,51 @@
                     modalBackdrop.classList.add('hidden');
                     document.body.style.overflow = ''; // 恢復背景滾動
                 }, 300);
+            }
+        }
+
+        // --- 7. YouTube 播放監聽與 GA4 點選/播放追蹤 ---
+        // 動態引入 YouTube Iframe Player API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        let ytPlayer;
+        let hasTrackedPlay = false;
+
+        // 當 API 準備好時會自動呼叫此全域函式
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('youtube-player', {
+                height: '100%',
+                width: '100%',
+                videoId: 'q3-_7tao9oQ',
+                playerVars: {
+                    'playsinline': 1,
+                    'rel': 0
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        // 監聽播放器狀態變化
+        function onPlayerStateChange(event) {
+            // YT.PlayerState.PLAYING 狀態為 1，代表影片開始播放（使用者點選播放）
+            if (event.data === YT.PlayerState.PLAYING) {
+                if (!hasTrackedPlay) {
+                    // 發送自訂事件到 Google Analytics (GA4)
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'interested_user', {
+                            'event_category': 'Video Interaction',
+                            'event_label': '精選日本導覽影片',
+                            'action': 'Play'
+                        });
+                        console.log("GA4 Event 'interested_user' Sent!");
+                    }
+                    hasTrackedPlay = true; // 每次頁面載入僅追蹤一次，避免使用者反覆點選暫停/播放時重複洗資料
+                }
             }
         }
     </script>
